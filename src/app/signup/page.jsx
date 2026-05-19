@@ -57,6 +57,13 @@ const SignupPage = () => {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL:"/"
+    })
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#fff7ed,_#ffffff_38%,_#f8fafc_100%)] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-[1440px] overflow-hidden rounded-[32px] border border-white/70 bg-white shadow-[0_30px_80px_-28px_rgba(15,23,42,0.25)] lg:grid-cols-[1fr_1fr]">
@@ -214,7 +221,8 @@ const SignupPage = () => {
               </div>
 
               <button
-                type="button"
+                type="submit"
+                onClick={handleGoogleSignIn}
                 className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-base font-semibold text-slate-700 shadow-[0_10px_25px_-22px_rgba(15,23,42,0.22)] transition hover:border-orange-200 hover:bg-orange-50"
               >
                 <FcGoogle className="h-6 w-6" />
