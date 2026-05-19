@@ -1,6 +1,7 @@
 import AvailableCars from "@/component/AvailableCars";
 import Banner from "@/component/Banner";
 import WhyChoose from "@/component/WhyChoose";
+import Works from "@/component/Works";
 
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
       <Banner />
       <AvailableCars />
       <WhyChoose />
+      <Works />
     </main>
   );
 }
