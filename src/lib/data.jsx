@@ -6,5 +6,13 @@ export const addCarDetails = async (car) => {
             },
             body: JSON.stringify(car)
         })
+
+        
 }
 
+export const getCarData = async () => {
+    const res = await fetch('http://localhost:5000/car');
+    const data = await res.json();
+
+    return data
+}

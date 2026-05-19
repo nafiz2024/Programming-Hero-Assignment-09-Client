@@ -32,7 +32,7 @@ export default function Banner() {
               experience.
             </p>
             <Link
-              href="/explore-cars"
+              href="/explore-car"
               className="mt-7 inline-flex items-center gap-3 rounded-lg bg-orange-500 px-6 py-4 text-base font-semibold text-white shadow-[0_18px_40px_-18px_rgba(249,115,22,0.9)] transition hover:bg-orange-600"
             >
               Explore Cars

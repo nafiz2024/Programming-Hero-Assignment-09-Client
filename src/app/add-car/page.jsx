@@ -1,7 +1,9 @@
 'use client'
 
 import { addCarDetails } from "@/lib/data";
+import { useRouter } from "next/navigation";
 import { FiChevronDown } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const inputClassName =
   'h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 text-sm text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] outline-none transition duration-200 placeholder:text-slate-400 focus:border-orange-300 focus:bg-white focus:ring-4 focus:ring-orange-100';
@@ -10,13 +12,18 @@ const labelClassName =
   'mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600';
 
 const AddCarPage = () => {
+    const router = useRouter();
 
     const onSubmit = async (e) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const car = Object.fromEntries(formData.entries())
 
-        addCarDetails(car)
+        await addCarDetails(car)
+
+        toast.success('Successfully Added The Car')
+
+        router.push("/explore-car")
     }
 
     return (
@@ -46,6 +53,7 @@ const AddCarPage = () => {
                 name="carName"
                 type="text"
                 placeholder="Enter car name"
+                required
                 className={inputClassName}
               />
             </div>
@@ -63,6 +71,7 @@ const AddCarPage = () => {
                   name="dailyRentPrice"
                   type="number"
                   placeholder="Enter daily rent price"
+                  required
                   className={`${inputClassName} pl-8`}
                 />
               </div>
@@ -79,6 +88,7 @@ const AddCarPage = () => {
                 name="description"
                 type="text"
                 placeholder="Enter description"
+                required
                 className={inputClassName}
               />
             </div>
@@ -92,6 +102,7 @@ const AddCarPage = () => {
                 name="imageUrl"
                 type="url"
                 placeholder="Enter image URL"
+                required
                 className={inputClassName}
               />
             </div>
@@ -107,6 +118,7 @@ const AddCarPage = () => {
                   id="carType"
                   name="carType"
                   defaultValue=""
+                  required
                   className={`${inputClassName} appearance-none pr-9`}
                 >
                   <option value="" disabled>
@@ -133,6 +145,7 @@ const AddCarPage = () => {
                   id="availabilityStatus"
                   name="availabilityStatus"
                   defaultValue=""
+                  required
                   className={`${inputClassName} appearance-none pr-9`}
                 >
                   <option value="" disabled>
@@ -159,6 +172,7 @@ const AddCarPage = () => {
                 name="seatCapacity"
                 type="number"
                 placeholder="Enter seat capacity"
+                required
                 className={inputClassName}
               />
             </div>
@@ -172,6 +186,7 @@ const AddCarPage = () => {
                 name="pickupLocation"
                 type="text"
                 placeholder="Enter pickup location"
+                required
                 className={inputClassName}
               />
             </div>
