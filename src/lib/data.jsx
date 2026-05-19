@@ -36,3 +36,13 @@ export const getCarDataById = async (id) => {
         return null;
     }
 }
+
+export const editCarDataById = async (_id, carData) => {
+    await fetch(`http://localhost:5000/car/${_id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(carData),
+            });
+}
