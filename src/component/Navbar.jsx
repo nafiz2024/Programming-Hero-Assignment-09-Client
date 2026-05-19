@@ -9,7 +9,7 @@ import logo from '@/assets/Logo2.png';
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/explore-cars', label: 'Explore Cars' },
+  { href: '/explore-car', label: 'Explore Cars' },
   { href: '/add-car', label: 'Add Car' },
   { href: '/bookings', label: 'My Bookings' },
 ];
