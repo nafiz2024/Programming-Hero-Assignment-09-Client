@@ -4,6 +4,7 @@ import { FiArrowLeft, FiCheckCircle, FiMapPin, FiShield, FiUsers } from "react-i
 import heroCar from "@/assets/DrivenFleet.png";
 import { getCarDataById } from "@/lib/data";
 import { EditCarDataModal } from "@/component/EditCarDataModal";
+import { DeleteCarData } from "@/component/DeleteCarData";
 
 function normalizeCar(car) {
     if (!car) {
@@ -171,12 +172,7 @@ const CarDetailsPage = async ({ params }) => {
                                 Book This Car
                             </button>
                             <EditCarDataModal car={car} />
-                            <button
-                                type="button"
-                                className="inline-flex h-12 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-6 text-sm font-semibold text-rose-500 transition hover:bg-rose-100"
-                            >
-                                Delete
-                            </button>
+                            <DeleteCarData car={car} />
                         </div>
                     </div>
                 </div>
