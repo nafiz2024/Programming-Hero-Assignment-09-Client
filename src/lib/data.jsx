@@ -16,3 +16,23 @@ export const getCarData = async () => {
 
     return data
 }
+
+export const getCarDataById = async (id) => {
+    try {
+        const res = await fetch(`http://localhost:5000/car/${id}`);
+
+        if (res.ok) {
+            const data = await res.json();
+            return data;
+        }
+    } catch {
+        // Fallback handled below
+    }
+
+    try {
+        const cars = await getCarData();
+        return cars.find((car) => String(car._id || car.id) === String(id)) || null;
+    } catch {
+        return null;
+    }
+}
