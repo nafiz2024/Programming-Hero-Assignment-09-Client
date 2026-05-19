@@ -2,7 +2,7 @@
 const MyBookingsPage = () => {
     return (
         <div>
-            
+            ccd
         </div>
     );
 };

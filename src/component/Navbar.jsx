@@ -11,12 +11,12 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/explore-car', label: 'Explore Cars' },
   { href: '/add-car', label: 'Add Car' },
-  { href: '/bookings', label: 'My Bookings' },
+  { href: '/my-bookings', label: 'My Bookings' },
 ];
 
 const profileLinks = [
   { href: '/add-car', label: 'Add Car', icon: FiPlusSquare },
-  { href: '/bookings', label: 'My Bookings', icon: FiHome },
+  { href: '/my-bookings', label: 'My Bookings', icon: FiHome },
   { href: '/my-added-cars', label: 'My Added Cars', icon: FiUser },
 ];
 
@@ -87,7 +87,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/login"
+            href="/signup"
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
           >
             Login

@@ -1,19 +1,18 @@
 "use client";
 
+import { deleteCarDataById } from "@/lib/data";
 import {AlertDialog, Button} from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export function DeleteCarData ({ car }) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        await fetch(`http://localhost:5000/car/${car._id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': "application/json"
-            },
-        });
+        await deleteCarDataById(car) 
+        
+        toast.error('Car Details Delete Successfully')
 
         router.push(`/explore-car`)
     }

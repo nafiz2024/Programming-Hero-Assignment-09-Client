@@ -26,6 +26,8 @@ export function EditCarDataModal({car}) {
 
         await editCarDataById(_id, carData)
 
+        toast.success('Car Details Edit Successfully')
+
         router.push(`/explore-car`)
     };
 

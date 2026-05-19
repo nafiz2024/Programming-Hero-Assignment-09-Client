@@ -46,3 +46,12 @@ export const editCarDataById = async (_id, carData) => {
                 body: JSON.stringify(carData),
             });
 }
+
+export const deleteCarDataById = async (car) => {
+    await fetch(`http://localhost:5000/car/${car._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': "application/json"
+            },
+        });
+}
