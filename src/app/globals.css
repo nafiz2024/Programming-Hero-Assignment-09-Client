@@ -1,3 +1,14 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
 @plugin "daisyui";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #0f172a;
+  background: #fff8f3;
+  font-family: var(--font-geist-sans), sans-serif;
+}
