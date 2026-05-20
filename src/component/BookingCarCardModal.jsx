@@ -18,7 +18,7 @@ export function BookingCarCardModal({ car }) {
     const { data: session } = useSession();
     const user = session?.user;
 
-    const { _id, dailyRentPrice, carName } = car;
+    const { _id, dailyRentPrice, carName, imageUrl } = car;
 
     const handelBooking = async (e) => {
         e.preventDefault();
@@ -37,6 +37,7 @@ export function BookingCarCardModal({ car }) {
             carId: _id,
             dailyRentPrice: dailyRentPrice,
             carName: carName,
+            imageUrl: imageUrl,
             driverNeed: formData.get("driverNeed"),
             pickupDate: formData.get("pickupDate"),
             dropOffDate: formData.get("dropOffDate"),
@@ -91,17 +92,30 @@ export function BookingCarCardModal({ car }) {
                       <option value="no">No</option>
                     </select>
                   </TextField>
-                  <TextField className="w-full" name="pickupDate" type="date" variant="secondary">
+                  <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Pickup Date</Label>
-                    <Input className={inputClassName} />
+                    <Input
+                      name="pickupDate"
+                      type="date"
+                      className={inputClassName}
+                    />
                   </TextField>
-                  <TextField className="w-full" name="dropOffDate" type="date" variant="secondary">
+                  <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Drop-off Date</Label>
-                    <Input className={inputClassName} />
+                    <Input
+                      name="dropOffDate"
+                      type="date"
+                      className={inputClassName}
+                    />
                   </TextField>
-                  <TextField className="w-full" name="specialNote" variant="secondary">
+                  <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Special Note</Label>
-                    <Input className={inputClassName} placeholder="Enter special note" />
+                    <Input
+                      name="specialNote"
+                      type="text"
+                      className={inputClassName}
+                      placeholder="Enter special note"
+                    />
                   </TextField>
                   <div className="flex flex-col-reverse gap-3 border-t border-white/70 pt-4 sm:flex-row sm:justify-end">
                     <Button

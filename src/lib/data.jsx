@@ -65,3 +65,15 @@ export const addCarBookingData = async (bookingData) => {
             body: JSON.stringify(bookingData)
         })
 }
+
+export const getCarBookingData = async () => {
+    const res = await fetch("http://localhost:5000/booking", { cache: "no-store" });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : data ? [data] : [];
+
+    return list.filter((item) => (
+        item &&
+        typeof item === "object" &&
+        (item.carId || item.userId || item.driverNeed || item.pickupDate || item.dropOffDate || item.specialNote)
+    ));
+}
