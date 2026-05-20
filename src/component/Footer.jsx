@@ -9,7 +9,7 @@ const quickLinks = [
   { href: '/', label: 'Home' },
   { href: '/explore-car', label: 'Explore Cars' },
   { href: '/add-car', label: 'Add Car' },
-  { href: '/bookings', label: 'My Bookings' },
+  { href: '/my-bookings', label: 'My Bookings' },
   { href: '/why-works', label: 'How It Works' },
   { href: '/faq', label: 'FAQs' },
 ];
@@ -26,7 +26,7 @@ const companyLinks = [
 const Footer = () => {
   return (
     <footer className="border-t border-orange-100 bg-white">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_0.9fr_0.9fr_1fr]">
           <div>
             <Link href="/" className="flex items-center">
@@ -103,12 +103,12 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-slate-100 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <p className="text-sm text-slate-400">
-            Â© 2025 DriveFleet. All rights reserved.
+            © 2025 DriveFleet. All rights reserved.
           </p>
 
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center justify-center gap-4 text-slate-400 sm:justify-end">
             <FaCcVisa className="h-6 w-6 text-[#1a1f71]" />
             <FaCcMastercard className="h-6 w-6 text-[#eb001b]" />
             <SiUpwork className="h-5 w-5 text-[#14a800]" />
@@ -121,3 +121,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

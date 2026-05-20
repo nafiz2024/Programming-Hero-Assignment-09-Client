@@ -17,6 +17,7 @@ const MyAddedCars = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user;
+  const userId = user?.id || "";
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,9 +33,9 @@ const MyAddedCars = () => {
   }, []);
 
   const myAddedCars = useMemo(() => {
-    if (!user?.id) return [];
-    return cars.filter((car) => String(car.userId || "") === String(user.id));
-  }, [cars, user?.id]);
+    if (!userId) return [];
+    return cars.filter((car) => String(car.userId || "") === String(userId));
+  }, [cars, userId]);
 
   const handleDelete = async (car) => {
     const { data: tokenData } = await authClient.token();

@@ -36,6 +36,7 @@ const formatPrice = (value) => {
 const MyBookingsPage = () => {
     const { data: session } = useSession();
     const user = session?.user;
+    const userId = user?.id || "";
     const [bookingList, setBookingList] = useState([]);
     const [cars, setCars] = useState([]);
     const [token, setToken] = useState("");
@@ -66,11 +67,11 @@ const MyBookingsPage = () => {
     );
 
     const myBookingList = useMemo(() => {
-        if (!user?.id) return [];
+        if (!userId) return [];
         return bookingList.filter(
-            (item) => String((item?.bookingData || item)?.userId || "") === String(user.id)
+            (item) => String((item?.bookingData || item)?.userId || "") === String(userId)
         );
-    }, [bookingList, user?.id]);
+    }, [bookingList, userId]);
 
     const handleDeleteBooking = async (bookingId) => {
         if (!bookingId) return;

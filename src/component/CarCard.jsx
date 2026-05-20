@@ -35,17 +35,17 @@ export default function CarCard({ car }) {
       </div>
 
       <div className="mt-5">
-        <h2 className="text-[28px]/none text-xl font-extrabold tracking-tight text-slate-900">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
           {car.carName}
         </h2>
         <p className="mt-2 text-sm font-medium text-slate-500">{car.carType}</p>
 
-        <p className="mt-4 text-3xl font-black tracking-tight text-orange-500">
+        <p className="mt-4 text-2xl font-black tracking-tight text-orange-500 sm:text-3xl">
           ${car.dailyRentPrice}
           <span className="ml-1 text-base font-semibold text-orange-500">/ day</span>
         </p>
 
-        <div className="mt-5 flex items-center justify-between gap-3">
+        <div className="mt-5 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
             <span className="inline-flex items-center gap-1.5">
               <FiUsers className="text-slate-400" />
@@ -59,7 +59,7 @@ export default function CarCard({ car }) {
 
           <Link
             href={detailsHref}
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-orange-500 px-5 text-sm font-semibold text-white transition hover:bg-orange-600"
+            className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-orange-500 px-5 text-sm font-semibold text-white transition hover:bg-orange-600 sm:w-auto"
           >
             Details
           </Link>

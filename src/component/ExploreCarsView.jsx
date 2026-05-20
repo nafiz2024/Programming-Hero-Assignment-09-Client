@@ -47,7 +47,7 @@ export default function ExploreCarsView({ cars }) {
       <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
               Explore Cars
             </h1>
             <div className="mt-3 flex items-center gap-3 text-sm font-medium text-slate-500">

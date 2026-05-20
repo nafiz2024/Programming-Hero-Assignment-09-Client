@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DriveFleet
 
-## Getting Started
+DriveFleet is a modern full-stack car rental platform where users can explore verified cars, book rides with custom dates, and manage their own car listings and bookings.
 
-First, run the development server:
+## Live Site
+
+Client URL: [https://drivefleet-nu.vercel.app](https://drivefleet-nu.vercel.app)
+
+## Highlights
+
+- Secure authentication with email/password and Google sign-in.
+- Protected routes for `Add Car`, `My Bookings`, and `My Added Cars`.
+- Smart car exploration with search and car-type filtering.
+- Detailed car page with booking, edit, and delete options.
+- Booking form includes driver need, pickup date, drop-off date, and note.
+- Automatic total booking price calculation based on rental days.
+- User-wise data visibility for bookings and added cars.
+- Fully responsive UI across mobile, tablet, and desktop.
+
+## Tech Stack
+
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- Better Auth
+- MongoDB
+- React Toastify
+- HeroUI
+
+## Project Pages
+
+- `/` - Home
+- `/explore-car` - Explore all cars
+- `/explore-car/[id]` - Single car details
+- `/add-car` - Add new car (protected)
+- `/my-bookings` - Current user's bookings (protected)
+- `/my-added-cars` - Current user's added cars (protected)
+- `/signin` - Sign in
+- `/signup` - Sign up
+
+## Getting Started Locally
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open in your browser:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Notes
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- This project uses token-based requests for protected backend endpoints.
+- UI is designed with a clean orange/blue visual identity for rental workflow clarity.

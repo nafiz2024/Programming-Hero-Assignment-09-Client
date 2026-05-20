@@ -4,6 +4,7 @@ import { authClient, useSession } from "@/lib/auth-client";
 import { addCarBookingData } from "@/lib/data";
 import {Button, Input, Label, Modal, Surface, TextField} from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { FiCalendar, FiChevronDown } from "react-icons/fi";
 import { toast } from "react-toastify";
 
@@ -18,6 +19,8 @@ export function BookingCarCardModal({ car }) {
     const router = useRouter();
     const { data: session } = useSession();
     const user = session?.user;
+    const pickupDateRef = useRef(null);
+    const dropOffDateRef = useRef(null);
 
     const { _id, dailyRentPrice, carName, imageUrl } = car;
 
@@ -101,22 +104,52 @@ export function BookingCarCardModal({ car }) {
                     <Label className={labelClassName}>Pickup Date</Label>
                     <div className="relative">
                       <input
+                        ref={pickupDateRef}
                         name="pickupDate"
                         type="date"
                         className={`${inputClassName} date-input pr-10 appearance-none`}
                       />
-                      <FiCalendar className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (pickupDateRef.current?.showPicker) {
+                            pickupDateRef.current.showPicker();
+                          } else {
+                            pickupDateRef.current?.focus();
+                            pickupDateRef.current?.click();
+                          }
+                        }}
+                        className="absolute right-3 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100"
+                        aria-label="Open pickup date picker"
+                      >
+                        <FiCalendar />
+                      </button>
                     </div>
                   </TextField>
                   <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Drop-off Date</Label>
                     <div className="relative">
                       <input
+                        ref={dropOffDateRef}
                         name="dropOffDate"
                         type="date"
                         className={`${inputClassName} date-input pr-10 appearance-none`}
                       />
-                      <FiCalendar className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (dropOffDateRef.current?.showPicker) {
+                            dropOffDateRef.current.showPicker();
+                          } else {
+                            dropOffDateRef.current?.focus();
+                            dropOffDateRef.current?.click();
+                          }
+                        }}
+                        className="absolute right-3 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100"
+                        aria-label="Open drop-off date picker"
+                      >
+                        <FiCalendar />
+                      </button>
                     </div>
                   </TextField>
                   <TextField className="w-full" variant="secondary">
