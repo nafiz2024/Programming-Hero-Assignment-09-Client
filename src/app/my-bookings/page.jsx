@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { deleteBookingDataById, getCarBookingData, getCarData } from "@/lib/data";
 import { toast } from "react-toastify";
 import LoadingSpinner from "@/component/LoadingSpinner";
@@ -45,9 +45,17 @@ const MyBookingsPage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
+                let token = "";
+                try {
+                    const { data: tokenData } = await authClient.token();
+                    token = tokenData?.token || "";
+                } catch {
+                    token = "";
+                }
+
                 const [bookingData, carData] = await Promise.all([
-                    getCarBookingData(),
-                    getCarData(),
+                    getCarBookingData(token),
+                    getCarData(token),
                 ]);
 
                 setBookingList(Array.isArray(bookingData) ? bookingData : bookingData ? [bookingData] : []);
@@ -80,7 +88,15 @@ const MyBookingsPage = () => {
 
     const handleDeleteBooking = async (bookingId) => {
         if (!bookingId) return;
-        await deleteBookingDataById(bookingId);
+        let token = "";
+        try {
+            const { data: tokenData } = await authClient.token();
+            token = tokenData?.token || "";
+        } catch {
+            token = "";
+        }
+
+        await deleteBookingDataById(bookingId, token);
         setBookingList((prev) => prev.filter((item) => String(item._id || item.id) !== String(bookingId)));
         toast.success("Booking deleted successfully");
     };

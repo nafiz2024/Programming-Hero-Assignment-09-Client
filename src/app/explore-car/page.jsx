@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ExploreCarsView from "@/component/ExploreCarsView";
+import { authClient } from "@/lib/auth-client";
 import { getCarData } from "@/lib/data";
 import LoadingSpinner from "@/component/LoadingSpinner";
 
@@ -16,7 +17,15 @@ const ExploreCar = () => {
         const loadCars = async () => {
             setLoading(true);
             try {
-                const data = await getCarData(undefined, {
+                let token = "";
+                try {
+                    const { data: tokenData } = await authClient.token();
+                    token = tokenData?.token || "";
+                } catch {
+                    token = "";
+                }
+
+                const data = await getCarData(token, {
                     search: searchText,
                     type: selectedType,
                 });

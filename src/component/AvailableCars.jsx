@@ -30,8 +30,15 @@ const AvailableCars = () => {
 
   useEffect(() => {
     const loadCars = async () => {
-      const { data: tokenData } = await authClient.token();
-      const data = await getCarData(tokenData?.token);
+      let token = "";
+      try {
+        const { data: tokenData } = await authClient.token();
+        token = tokenData?.token || "";
+      } catch {
+        token = "";
+      }
+
+      const data = await getCarData(token);
       setCars(Array.isArray(data) ? data : []);
     };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { deleteCarDataById, getCarData } from "@/lib/data";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,15 @@ const MyAddedCars = () => {
   useEffect(() => {
     const loadCars = async () => {
       try {
-        const data = await getCarData();
+        let token = "";
+        try {
+          const { data: tokenData } = await authClient.token();
+          token = tokenData?.token || "";
+        } catch {
+          token = "";
+        }
+
+        const data = await getCarData(token);
         setCars(Array.isArray(data) ? data : []);
       } finally {
         setLoading(false);
@@ -45,7 +53,15 @@ const MyAddedCars = () => {
   }, [cars, userEmail, userId]);
 
   const handleDelete = async (car) => {
-    await deleteCarDataById(car);
+    let token = "";
+    try {
+      const { data: tokenData } = await authClient.token();
+      token = tokenData?.token || "";
+    } catch {
+      token = "";
+    }
+
+    await deleteCarDataById(car, token);
     setCars((prev) => prev.filter((item) => String(item._id || item.id) !== String(car._id || car.id)));
     toast.success("Car deleted successfully");
   };
