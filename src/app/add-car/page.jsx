@@ -1,6 +1,7 @@
 'use client'
 
 import { addCarDetails } from "@/lib/data";
+import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { FiChevronDown } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -13,11 +14,14 @@ const labelClassName =
 
 const AddCarPage = () => {
     const router = useRouter();
+    const { data: session } = useSession();
+    const user = session?.user;
 
     const onSubmit = async (e) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const car = Object.fromEntries(formData.entries())
+        car.userId = user?.id || "";
 
         await addCarDetails(car)
 

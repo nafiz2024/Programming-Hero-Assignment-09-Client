@@ -1,3 +1,18 @@
+const safeFetchJson = async (url, options = {}) => {
+    try {
+        const res = await fetch(url, options);
+        const contentType = res.headers.get("content-type") || "";
+
+        if (!res.ok || !contentType.includes("application/json")) {
+            return null;
+        }
+
+        return await res.json();
+    } catch {
+        return null;
+    }
+};
+
 export const addCarDetails = async (car) => {
     await fetch('http://localhost:5000/car', {
             method: 'POST',
@@ -11,10 +26,9 @@ export const addCarDetails = async (car) => {
 }
 
 export const getCarData = async () => {
-    const res = await fetch('http://localhost:5000/car');
-    const data = await res.json();
+    const data = await safeFetchJson("http://localhost:5000/car", { cache: "no-store" });
 
-    return data
+    return Array.isArray(data) ? data : []
 }
 
 export const getCarDataById = async (id) => {
@@ -67,8 +81,7 @@ export const addCarBookingData = async (bookingData) => {
 }
 
 export const getCarBookingData = async () => {
-    const res = await fetch("http://localhost:5000/booking", { cache: "no-store" });
-    const data = await res.json();
+    const data = await safeFetchJson("http://localhost:5000/booking", { cache: "no-store" });
     const list = Array.isArray(data) ? data : data ? [data] : [];
 
     return list.filter((item) => (
@@ -76,4 +89,13 @@ export const getCarBookingData = async () => {
         typeof item === "object" &&
         (item.carId || item.userId || item.driverNeed || item.pickupDate || item.dropOffDate || item.specialNote)
     ));
+}
+
+export const deleteBookingDataById = async (bookingId) => {
+    await fetch(`http://localhost:5000/booking/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 }

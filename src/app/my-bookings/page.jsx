@@ -1,4 +1,5 @@
-import { getCarBookingData, getCarData } from "@/lib/data";
+import { deleteBookingDataById, getCarBookingData, getCarData } from "@/lib/data";
+import { revalidatePath } from "next/cache";
 
 const formatDate = (value) => {
     if (!value) return "N/A";
@@ -28,6 +29,13 @@ const formatPrice = (value) => {
 };
 
 const MyBookingsPage = async () => {
+    const handleDeleteBooking = async (formData) => {
+        "use server";
+        const bookingId = formData.get("bookingId");
+        if (!bookingId) return;
+        await deleteBookingDataById(bookingId);
+        revalidatePath("/my-bookings");
+    };
 
     const bookingData = await getCarBookingData();
     const cars = await getCarData();
@@ -58,6 +66,7 @@ const MyBookingsPage = async () => {
                                 <th className="px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">PickUp Date</th>
                                 <th className="px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">Drop-off Date</th>
                                 <th className="px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">Note</th>
+                                <th className="px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,6 +115,17 @@ const MyBookingsPage = async () => {
                                             <span className="inline-flex max-w-[180px] truncate rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
                                                 {booking.specialNote || "N/A"}
                                             </span>
+                                        </td>
+                                        <td className="px-4 py-4">
+                                            <form action={handleDeleteBooking}>
+                                                <input type="hidden" name="bookingId" value={String(item._id || item.id || "")} />
+                                                <button
+                                                    type="submit"
+                                                    className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-500 px-3 text-xs font-semibold text-white transition hover:bg-rose-600"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 );
