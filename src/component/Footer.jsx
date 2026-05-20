@@ -1,4 +1,4 @@
-import Image from 'next/image';
+ï»¿import Image from 'next/image';
 import Link from 'next/link';
 import { FiClock, FiFacebook, FiInstagram, FiMail, FiMapPin, FiPhone } from 'react-icons/fi';
 import { FaCcMastercard, FaCcPaypal, FaCcVisa } from 'react-icons/fa';
@@ -104,9 +104,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-slate-100 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p className="text-sm text-slate-400">
-            © 2025 DriveFleet. All rights reserved.
-          </p>
+          <p className="text-sm text-slate-400">(c) 2025 DriveFleet. All rights reserved.</p>
 
           <div className="flex items-center justify-center gap-4 text-slate-400 sm:justify-end">
             <FaCcVisa className="h-6 w-6 text-[#1a1f71]" />
@@ -121,4 +119,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
