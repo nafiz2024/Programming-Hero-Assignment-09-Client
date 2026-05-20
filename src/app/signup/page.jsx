@@ -57,7 +57,7 @@ const SignupPage = () => {
 
     if (data) {
       toast.success('Successfully Created Your Account')
-      router.push('/')
+      router.push('/signin')
       router.refresh()
     }
 

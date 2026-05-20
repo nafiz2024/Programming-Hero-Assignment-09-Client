@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useDeferredValue, useState } from 'react';
 import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import CarCard from '@/component/CarCard';
 import heroCar from '@/assets/DrivenFleet.png';
@@ -23,24 +22,16 @@ function normalizeCars(cars) {
   }));
 }
 
-export default function ExploreCarsView({ cars }) {
+export default function ExploreCarsView({
+  cars,
+  searchText,
+  selectedType,
+  onSearchChange,
+  onTypeChange,
+}) {
   const normalizedCars = normalizeCars(cars);
-  const [searchText, setSearchText] = useState('');
-  const [selectedType, setSelectedType] = useState('all');
-  const deferredSearchText = useDeferredValue(searchText);
 
   const types = ['all', ...new Set(normalizedCars.map((car) => car.carType))];
-
-  const filteredCars = normalizedCars.filter((car) => {
-    const matchesSearch = car.carName
-      .toLowerCase()
-      .includes(deferredSearchText.toLowerCase());
-
-    const matchesType =
-      selectedType === 'all' || car.carType.toLowerCase() === selectedType.toLowerCase();
-
-    return matchesSearch && matchesType;
-  });
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#fff7ed,_#ffffff_38%,_#f8fafc_100%)]">
@@ -65,7 +56,7 @@ export default function ExploreCarsView({ cars }) {
               <input
                 type="text"
                 value={searchText}
-                onChange={(event) => setSearchText(event.target.value)}
+                onChange={(event) => onSearchChange(event.target.value)}
                 placeholder="Search by car name..."
                 className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-orange-300 focus:ring-4 focus:ring-orange-100"
               />
@@ -74,7 +65,7 @@ export default function ExploreCarsView({ cars }) {
             <div className="relative sm:w-48">
               <select
                 value={selectedType}
-                onChange={(event) => setSelectedType(event.target.value)}
+                onChange={(event) => onTypeChange(event.target.value)}
                 className="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-11 text-sm font-semibold text-slate-700 outline-none transition focus:border-orange-300 focus:ring-4 focus:ring-orange-100"
               >
                 {types.map((type) => (
@@ -89,12 +80,12 @@ export default function ExploreCarsView({ cars }) {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredCars.map((car) => (
+          {normalizedCars.map((car) => (
             <CarCard key={car._id} car={car} />
           ))}
         </div>
 
-        {filteredCars.length === 0 ? (
+        {normalizedCars.length === 0 ? (
           <div className="mt-10 rounded-3xl border border-dashed border-slate-200 bg-white/80 px-6 py-16 text-center">
             <h2 className="text-xl font-bold text-slate-900">No cars found</h2>
             <p className="mt-2 text-sm text-slate-500">

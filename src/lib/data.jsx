@@ -1,6 +1,9 @@
 const safeFetchJson = async (url, options = {}) => {
     try {
-        const res = await fetch(url, options);
+        const res = await fetch(url, {
+            credentials: "include",
+            ...options,
+        });
         const contentType = res.headers.get("content-type") || "";
 
         if (!res.ok || !contentType.includes("application/json")) {
@@ -15,12 +18,27 @@ const safeFetchJson = async (url, options = {}) => {
 
 const authHeaders = (token, extraHeaders = {}) => ({
     ...extraHeaders,
-    ...(token ? { authorization: `Bearer ${token}` } : {}),
 });
+
+const buildCarQuery = (filters = {}) => {
+    const params = new URLSearchParams();
+
+    if (filters.search) {
+        params.set("search", String(filters.search).trim());
+    }
+
+    if (filters.type && String(filters.type).toLowerCase() !== "all") {
+        params.set("type", String(filters.type).trim());
+    }
+
+    const query = params.toString();
+    return query ? `?${query}` : "";
+};
 
 export const addCarDetails = async (car, token) => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car`, {
             method: 'POST',
+            credentials: "include",
             headers: authHeaders(token, {
                 'content-type': 'application/json'
             }),
@@ -30,8 +48,9 @@ export const addCarDetails = async (car, token) => {
         
 }
 
-export const getCarData = async (token) => {
-    const data = await safeFetchJson(`${process.env.NEXT_PUBLIC_SERVER_URL}/car`, {
+export const getCarData = async (token, filters = {}) => {
+    const query = buildCarQuery(filters);
+    const data = await safeFetchJson(`${process.env.NEXT_PUBLIC_SERVER_URL}/car${query}`, {
         cache: "no-store",
         headers: authHeaders(token),
     });
@@ -42,6 +61,7 @@ export const getCarData = async (token) => {
 export const getCarDataById = async (id, token) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${id}`, {
+            credentials: "include",
             headers: authHeaders(token),
         });
 
@@ -64,6 +84,7 @@ export const getCarDataById = async (id, token) => {
 export const editCarDataById = async (_id, carData, token) => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${_id}`, {
                 method: "PATCH",
+                credentials: "include",
                 headers: authHeaders(token, {
                     "Content-Type": "application/json",
                 }),
@@ -74,6 +95,7 @@ export const editCarDataById = async (_id, carData, token) => {
 export const deleteCarDataById = async (car, token) => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${car._id}`, {
             method: 'DELETE',
+            credentials: "include",
             headers: authHeaders(token, {
                 'Content-Type': "application/json"
             }),
@@ -83,6 +105,7 @@ export const deleteCarDataById = async (car, token) => {
 export const addCarBookingData = async (bookingData, token) => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
             method: "POST",
+            credentials: "include",
             headers: authHeaders(token, {
                 'content-type': "application/json"
             }),
@@ -106,6 +129,7 @@ export const getCarBookingData = async (token) => {
 export const deleteBookingDataById = async (bookingId, token) => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
         method: "DELETE",
+        credentials: "include",
         headers: authHeaders(token, {
             "Content-Type": "application/json",
         }),

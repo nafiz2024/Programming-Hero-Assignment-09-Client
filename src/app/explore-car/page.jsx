@@ -10,12 +10,18 @@ const ExploreCar = () => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
+    const [searchText, setSearchText] = useState("");
+    const [selectedType, setSelectedType] = useState("all");
 
     useEffect(() => {
         const loadCars = async () => {
+            setLoading(true);
             try {
                 const { data: tokenData } = await authClient.token();
-                const data = await getCarData(tokenData?.token);
+                const data = await getCarData(tokenData?.token, {
+                    search: searchText,
+                    type: selectedType,
+                });
                 setCars(Array.isArray(data) ? data : []);
                 setLoadError("");
             } catch (error) {
@@ -27,7 +33,7 @@ const ExploreCar = () => {
         };
 
         loadCars();
-    }, []);
+    }, [searchText, selectedType]);
 
     if (loading) {
         return (
@@ -49,7 +55,13 @@ const ExploreCar = () => {
 
     return (
         <div>
-            <ExploreCarsView cars={cars} />
+            <ExploreCarsView
+                cars={cars}
+                searchText={searchText}
+                selectedType={selectedType}
+                onSearchChange={setSearchText}
+                onTypeChange={setSelectedType}
+            />
         </div>
     );
 };
