@@ -31,9 +31,13 @@ export const getCarData = async () => {
     return Array.isArray(data) ? data : []
 }
 
-export const getCarDataById = async (id) => {
+export const getCarDataById = async (id, token) => {
     try {
-        const res = await fetch(`http://localhost:5000/car/${id}`);
+        const res = await fetch(`http://localhost:5000/car/${id}`, { 
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+     });
 
         if (res.ok) {
             const data = await res.json();
@@ -81,7 +85,7 @@ export const addCarBookingData = async (bookingData) => {
 }
 
 export const getCarBookingData = async () => {
-    const data = await safeFetchJson("http://localhost:5000/booking", { cache: "no-store" });
+    const data = await safeFetchJson("http://localhost:5000/booking",);
     const list = Array.isArray(data) ? data : data ? [data] : [];
 
     return list.filter((item) => (

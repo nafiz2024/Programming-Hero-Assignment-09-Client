@@ -6,6 +6,8 @@ import { getCarDataById } from "@/lib/data";
 import { EditCarDataModal } from "@/component/EditCarDataModal";
 import { DeleteCarData } from "@/component/DeleteCarData";
 import { BookingCarCardModal } from "@/component/BookingCarCardModal";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 function normalizeCar(car) {
     if (!car) {
@@ -31,8 +33,11 @@ function normalizeCar(car) {
 
 const CarDetailsPage = async ({ params }) => {
     const { id } = await params;
+    const { token } = await auth.api.getToken({
+        headers: await headers()
+    })
 
-    const carData = await getCarDataById(id);
+    const carData = await getCarDataById(id, token);
     const car = normalizeCar(carData);
 
     if (!car) {
