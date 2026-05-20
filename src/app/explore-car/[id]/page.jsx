@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FiArrowLeft, FiCheckCircle, FiMapPin, FiShield, FiUsers } from "react-icons/fi";
-import heroCar from "@/assets/DrivenFleet.png";
 import { getCarDataById } from "@/lib/data";
 import { EditCarDataModal } from "@/component/EditCarDataModal";
 import { DeleteCarData } from "@/component/DeleteCarData";
@@ -27,7 +26,7 @@ function normalizeCar(car) {
         availabilityStatus: String(
             car.availabilityStatus || car.status || "unavailable"
         ).toLowerCase(),
-        imageUrl: car.imageUrl || car.image || heroCar.src,
+        imageUrl: car.imageUrl || car.image || car.imgUrl || "",
         description:
             car.description ||
             "This vehicle is well maintained, comfortable, and ready for your next journey.",
@@ -96,12 +95,18 @@ const CarDetailsPage = () => {
                 <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
                     <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white p-5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.24)]">
                         <div className="overflow-hidden rounded-[26px] bg-[radial-gradient(circle_at_top,_#ffffff,_#f8fafc_68%,_#eef2f7)]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={car.imageUrl}
-                                alt={car.carName}
-                                className="h-[360px] w-full object-cover sm:h-[460px]"
-                            />
+                            {car.imageUrl ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={car.imageUrl}
+                                    alt={car.carName}
+                                    className="h-[360px] w-full object-cover sm:h-[460px]"
+                                />
+                            ) : (
+                                <div className="flex h-[360px] w-full items-center justify-center bg-slate-100 text-base font-medium text-slate-500 sm:h-[460px]">
+                                    No image
+                                </div>
+                            )}
                         </div>
                     </div>
 

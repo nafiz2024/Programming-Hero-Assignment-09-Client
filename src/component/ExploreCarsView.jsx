@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import CarCard from '@/component/CarCard';
-import heroCar from '@/assets/DrivenFleet.png';
 
 function normalizeCars(cars) {
   if (!Array.isArray(cars)) {
@@ -18,7 +17,7 @@ function normalizeCars(cars) {
     seatCapacity: Number(car.seatCapacity || car.seats || 0),
     pickupLocation: car.pickupLocation || car.location || 'Unknown',
     availabilityStatus: car.availabilityStatus || car.status || 'unavailable',
-    imageUrl: car.imageUrl || car.image || heroCar.src,
+    imageUrl: car.imageUrl || car.image || car.imgUrl || '',
   }));
 }
 

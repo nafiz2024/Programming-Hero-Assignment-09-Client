@@ -18,6 +18,7 @@ const safeFetchJson = async (url, options = {}) => {
 
 const authHeaders = (token, extraHeaders = {}) => ({
     ...extraHeaders,
+    ...(token ? { authorization: `Bearer ${token}` } : {}),
 });
 
 const buildCarQuery = (filters = {}) => {

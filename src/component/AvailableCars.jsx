@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { FiMapPin, FiUsers } from 'react-icons/fi';
 import { getCarData } from '@/lib/data';
-import heroCar from '@/assets/DrivenFleet.png';
 import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 
@@ -22,7 +21,7 @@ function normalizeCars(cars) {
     availabilityStatus: String(
       car.availabilityStatus || car.status || 'unavailable'
     ).toLowerCase(),
-    imageUrl: car.imageUrl || car.image || heroCar.src,
+    imageUrl: car.imageUrl || car.image || car.imgUrl || '',
   }));
 }
 
@@ -70,12 +69,18 @@ const AvailableCars = () => {
               className="rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_12px_28px_-20px_rgba(15,23,42,0.22)]"
             >
               <div className="overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top,_#ffffff,_#f4f7fb_72%,_#edf2f7)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={car.imageUrl}
-                  alt={car.carName}
-                  className="h-44 w-full object-cover"
-                />
+                {car.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={car.imageUrl}
+                    alt={car.carName}
+                    className="h-44 w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-44 w-full items-center justify-center bg-slate-100 text-sm font-medium text-slate-500">
+                    No image
+                  </div>
+                )}
               </div>
 
               <div className="mt-4">
