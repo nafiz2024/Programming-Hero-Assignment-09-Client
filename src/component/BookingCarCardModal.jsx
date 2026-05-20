@@ -1,9 +1,10 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { addCarBookingData } from "@/lib/data";
 import {Button, Input, Label, Modal, Surface, TextField} from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { FiCalendar, FiChevronDown } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 const inputClassName =
@@ -44,7 +45,8 @@ export function BookingCarCardModal({ car }) {
             specialNote: formData.get("specialNote")
         }
 
-        await addCarBookingData(bookingData)
+        const { data: tokenData } = await authClient.token();
+        await addCarBookingData(bookingData, tokenData?.token)
 
         toast.success('Successfully Booking The Car')
 
@@ -80,33 +82,42 @@ export function BookingCarCardModal({ car }) {
                 <form onSubmit={handelBooking} className="mt-8 space-y-5">
                   <TextField className="w-full" name="driverNeed" variant="secondary">
                     <Label className={labelClassName}>Driver Need</Label>
-                    <select
-                      name="driverNeed"
-                      defaultValue=""
-                      className={inputClassName}
-                    >
-                      <option value="" disabled>
-                        Select driver option
-                      </option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        name="driverNeed"
+                        defaultValue=""
+                        className={`${inputClassName} appearance-none pr-10`}
+                      >
+                        <option value="" disabled>
+                          Select driver option
+                        </option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                      <FiChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                    </div>
                   </TextField>
                   <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Pickup Date</Label>
-                    <Input
-                      name="pickupDate"
-                      type="date"
-                      className={inputClassName}
-                    />
+                    <div className="relative">
+                      <input
+                        name="pickupDate"
+                        type="date"
+                        className={`${inputClassName} date-input pr-10 appearance-none`}
+                      />
+                      <FiCalendar className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                    </div>
                   </TextField>
                   <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Drop-off Date</Label>
-                    <Input
-                      name="dropOffDate"
-                      type="date"
-                      className={inputClassName}
-                    />
+                    <div className="relative">
+                      <input
+                        name="dropOffDate"
+                        type="date"
+                        className={`${inputClassName} date-input pr-10 appearance-none`}
+                      />
+                      <FiCalendar className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                    </div>
                   </TextField>
                   <TextField className="w-full" variant="secondary">
                     <Label className={labelClassName}>Special Note</Label>

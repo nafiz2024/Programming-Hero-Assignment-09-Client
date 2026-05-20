@@ -1,10 +1,11 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { deleteCarDataById, getCarData } from "@/lib/data";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import LoadingSpinner from "@/component/LoadingSpinner";
 
 const statusClassMap = {
   available: "bg-emerald-100 text-emerald-700",
@@ -21,7 +22,8 @@ const MyAddedCars = () => {
 
   useEffect(() => {
     const loadCars = async () => {
-      const data = await getCarData();
+      const { data: tokenData } = await authClient.token();
+      const data = await getCarData(tokenData?.token);
       setCars(Array.isArray(data) ? data : []);
       setLoading(false);
     };
@@ -35,7 +37,8 @@ const MyAddedCars = () => {
   }, [cars, user?.id]);
 
   const handleDelete = async (car) => {
-    await deleteCarDataById(car);
+    const { data: tokenData } = await authClient.token();
+    await deleteCarDataById(car, tokenData?.token);
     setCars((prev) => prev.filter((item) => String(item._id || item.id) !== String(car._id || car.id)));
     toast.success("Car deleted successfully");
   };
@@ -118,7 +121,7 @@ const MyAddedCars = () => {
           </table>
         </div>
 
-        {loading && <p className="mt-4 text-sm text-slate-500">Loading cars...</p>}
+        {loading && <LoadingSpinner label="Loading cars..." />}
         {!loading && myAddedCars.length === 0 && (
           <p className="mt-4 text-sm text-slate-500">No cars found for the current logged-in user.</p>
         )}

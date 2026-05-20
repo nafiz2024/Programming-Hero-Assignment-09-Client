@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteCarDataById } from "@/lib/data";
+import { authClient } from "@/lib/auth-client";
 import {AlertDialog, Button} from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { FiTrash2 } from "react-icons/fi";
@@ -10,7 +11,8 @@ export function DeleteCarData ({ car }) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        await deleteCarDataById(car) 
+        const { data: tokenData } = await authClient.token();
+        await deleteCarDataById(car, tokenData?.token) 
         
         toast.error('Car Details Delete Successfully')
 

@@ -1,7 +1,11 @@
+"use client";
+
 import Link from 'next/link';
 import { FiMapPin, FiUsers } from 'react-icons/fi';
 import { getCarData } from '@/lib/data';
 import heroCar from '@/assets/DrivenFleet.png';
+import { useEffect, useState } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 function normalizeCars(cars) {
   if (!Array.isArray(cars)) {
@@ -22,8 +26,19 @@ function normalizeCars(cars) {
   }));
 }
 
-const AvailableCars = async () => {
-  const cars = await getCarData();
+const AvailableCars = () => {
+  const [cars, setCars] = useState([]);
+
+  useEffect(() => {
+    const loadCars = async () => {
+      const { data: tokenData } = await authClient.token();
+      const data = await getCarData(tokenData?.token);
+      setCars(Array.isArray(data) ? data : []);
+    };
+
+    loadCars();
+  }, []);
+
   const normalizedCars = normalizeCars(cars);
   const visibleCars = normalizedCars.slice(0, 6);
 
@@ -59,7 +74,7 @@ const AvailableCars = async () => {
                 <img
                   src={car.imageUrl}
                   alt={car.carName}
-                  className="h-44 w-full object-contain p-3"
+                  className="h-44 w-full object-cover"
                 />
               </div>
 

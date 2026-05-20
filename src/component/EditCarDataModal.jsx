@@ -1,6 +1,7 @@
 "use client";
 
 import { editCarDataById } from "@/lib/data";
+import { authClient } from "@/lib/auth-client";
 import { Button, Modal, Surface } from "@heroui/react";
 
 import { useRouter } from "next/navigation";
@@ -24,7 +25,8 @@ export function EditCarDataModal({car}) {
         const formData = new FormData(e.currentTarget);
         const carData = Object.fromEntries(formData.entries());
 
-        await editCarDataById(_id, carData)
+        const { data: tokenData } = await authClient.token();
+        await editCarDataById(_id, carData, tokenData?.token)
 
         toast.success('Car Details Edit Successfully')
 

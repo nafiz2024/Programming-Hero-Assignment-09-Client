@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FiChevronDown, FiHome, FiLogOut, FiPlusSquare, FiUser } from 'react-icons/fi';
 import logo from '@/assets/Logo2.png';
-import { signOut, useSession } from '@/lib/auth-client';
+import { authClient, signOut, useSession } from '@/lib/auth-client';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -24,9 +24,16 @@ const profileLinks = [
 const Navbar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [hasSessionCookie, setHasSessionCookie] = useState(false);
   const menuRef = useRef(null);
   const { data: session } = useSession();
-  const user = session?.user;
+  const user =
+    session?.user ||
+    session?.data?.user ||
+    session?.session?.user ||
+    currentUser;
+  const isLoggedIn = Boolean(user || hasSessionCookie);
   const userName = user?.name?.trim();
   const fallbackInitial = userName?.charAt(0)?.toUpperCase() || 'N';
   const hasUserImage = typeof user?.image === 'string' && user.image.trim().length > 0;
@@ -53,9 +60,43 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const cookie = document.cookie || "";
+    const hasCookie =
+      cookie.includes("drivefleet-auth.session_token=") ||
+      cookie.includes("drivefleet-auth.session=") ||
+      cookie.includes("better-auth.session_token=");
+    setHasSessionCookie(hasCookie);
+  }, [pathname]);
+
+  useEffect(() => {
+    const nextUser =
+      session?.user ||
+      session?.data?.user ||
+      session?.session?.user ||
+      null;
+    if (nextUser) {
+      setCurrentUser(nextUser);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      const { data } = await authClient.getSession();
+      const nextUser =
+        data?.user ||
+        data?.data?.user ||
+        data?.session?.user ||
+        null;
+      setCurrentUser(nextUser);
+    };
+    loadSession();
+  }, []);
+
   const handleLogout = async () => {
     await signOut();
     setIsMenuOpen(false);
+    window.location.replace("/signin");
   };
 
   return (
@@ -97,7 +138,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {user ? (
+          {isLoggedIn ? (
             <div className="relative" ref={menuRef}>
               <button
                 type="button"

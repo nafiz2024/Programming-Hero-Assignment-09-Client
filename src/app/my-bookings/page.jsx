@@ -1,5 +1,10 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { authClient, useSession } from "@/lib/auth-client";
 import { deleteBookingDataById, getCarBookingData, getCarData } from "@/lib/data";
-import { revalidatePath } from "next/cache";
+import { toast } from "react-toastify";
+import LoadingSpinner from "@/component/LoadingSpinner";
 
 const formatDate = (value) => {
     if (!value) return "N/A";
@@ -28,19 +33,51 @@ const formatPrice = (value) => {
     return `$${Number(value || 0).toLocaleString("en-US")}`;
 };
 
-const MyBookingsPage = async () => {
-    const handleDeleteBooking = async (formData) => {
-        "use server";
-        const bookingId = formData.get("bookingId");
-        if (!bookingId) return;
-        await deleteBookingDataById(bookingId);
-        revalidatePath("/my-bookings");
-    };
+const MyBookingsPage = () => {
+    const { data: session } = useSession();
+    const user = session?.user;
+    const [bookingList, setBookingList] = useState([]);
+    const [cars, setCars] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
 
-    const bookingData = await getCarBookingData();
-    const cars = await getCarData();
-    const carMap = new Map((Array.isArray(cars) ? cars : []).map((car) => [String(car._id || car.id), car]));
-    const bookingList = Array.isArray(bookingData) ? bookingData : bookingData ? [bookingData] : [];
+    useEffect(() => {
+        const loadData = async () => {
+            const { data: tokenData } = await authClient.token();
+            const nextToken = tokenData?.token || "";
+            setToken(nextToken);
+
+            const [bookingData, carData] = await Promise.all([
+                getCarBookingData(nextToken),
+                getCarData(nextToken),
+            ]);
+
+            setBookingList(Array.isArray(bookingData) ? bookingData : bookingData ? [bookingData] : []);
+            setCars(Array.isArray(carData) ? carData : []);
+            setLoading(false);
+        };
+
+        loadData();
+    }, []);
+
+    const carMap = useMemo(
+        () => new Map(cars.map((car) => [String(car._id || car.id), car])),
+        [cars]
+    );
+
+    const myBookingList = useMemo(() => {
+        if (!user?.id) return [];
+        return bookingList.filter(
+            (item) => String((item?.bookingData || item)?.userId || "") === String(user.id)
+        );
+    }, [bookingList, user?.id]);
+
+    const handleDeleteBooking = async (bookingId) => {
+        if (!bookingId) return;
+        await deleteBookingDataById(bookingId, token);
+        setBookingList((prev) => prev.filter((item) => String(item._id || item.id) !== String(bookingId)));
+        toast.success("Booking deleted successfully");
+    };
 
     return (
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -52,7 +89,7 @@ const MyBookingsPage = async () => {
                         <p className="mt-1 text-sm text-slate-500">Here are your all bookings.</p>
                     </div>
                     <div className="rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-semibold text-orange-600">
-                        {bookingList.length} Booking{bookingList.length === 1 ? "" : "s"}
+                        {myBookingList.length} Booking{myBookingList.length === 1 ? "" : "s"}
                     </div>
                 </div>
 
@@ -70,7 +107,7 @@ const MyBookingsPage = async () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {bookingList.map((item) => {
+                            {myBookingList.map((item) => {
                                 const booking = item?.bookingData || item;
                                 const matchedCar = carMap.get(String(booking.carId || ""));
                                 const imageSrc = booking.imageUrl || matchedCar?.imageUrl || "";
@@ -117,15 +154,13 @@ const MyBookingsPage = async () => {
                                             </span>
                                         </td>
                                         <td className="px-4 py-4">
-                                            <form action={handleDeleteBooking}>
-                                                <input type="hidden" name="bookingId" value={String(item._id || item.id || "")} />
-                                                <button
-                                                    type="submit"
-                                                    className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-500 px-3 text-xs font-semibold text-white transition hover:bg-rose-600"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </form>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteBooking(String(item._id || item.id || ""))}
+                                                className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-500 px-3 text-xs font-semibold text-white transition hover:bg-rose-600"
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 );
@@ -133,7 +168,8 @@ const MyBookingsPage = async () => {
                         </tbody>
                     </table>
                 </div>
-                {bookingList.length === 0 && (
+                {loading && <LoadingSpinner label="Loading bookings..." />}
+                {!loading && myBookingList.length === 0 && (
                     <p className="mt-4 text-sm text-slate-500">No booking data found.</p>
                 )}
             </div>

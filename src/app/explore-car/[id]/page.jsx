@@ -1,13 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useParams } from "next/navigation";
 import { FiArrowLeft, FiCheckCircle, FiMapPin, FiShield, FiUsers } from "react-icons/fi";
 import heroCar from "@/assets/DrivenFleet.png";
 import { getCarDataById } from "@/lib/data";
 import { EditCarDataModal } from "@/component/EditCarDataModal";
 import { DeleteCarData } from "@/component/DeleteCarData";
 import { BookingCarCardModal } from "@/component/BookingCarCardModal";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { authClient } from "@/lib/auth-client";
+import { useEffect, useMemo, useState } from "react";
+import LoadingSpinner from "@/component/LoadingSpinner";
 
 function normalizeCar(car) {
     if (!car) {
@@ -31,17 +34,46 @@ function normalizeCar(car) {
     };
 }
 
-const CarDetailsPage = async ({ params }) => {
-    const { id } = await params;
-    const { token } = await auth.api.getToken({
-        headers: await headers()
-    })
+const CarDetailsPage = () => {
+    const params = useParams();
+    const id = params?.id;
+    const [carData, setCarData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const carData = await getCarDataById(id, token);
-    const car = normalizeCar(carData);
+    useEffect(() => {
+        const loadCar = async () => {
+            if (!id) return;
+            const { data: tokenData } = await authClient.token();
+            const data = await getCarDataById(id, tokenData?.token);
+            setCarData(data || null);
+            setLoading(false);
+        };
+        loadCar();
+    }, [id]);
+
+    const car = useMemo(() => normalizeCar(carData), [carData]);
+
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#fff7ed,_#ffffff_38%,_#f8fafc_100%)]">
+                <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+                    <LoadingSpinner label="Loading car details..." />
+                </section>
+            </main>
+        );
+    }
 
     if (!car) {
-        notFound();
+        return (
+            <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#fff7ed,_#ffffff_38%,_#f8fafc_100%)]">
+                <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center">
+                        <p className="text-lg font-bold text-slate-900">Car not found</p>
+                        <p className="mt-2 text-sm text-slate-500">The requested car details could not be loaded.</p>
+                    </div>
+                </section>
+            </main>
+        );
     }
 
     const isAvailable = car.availabilityStatus === "available";
@@ -68,7 +100,7 @@ const CarDetailsPage = async ({ params }) => {
                             <img
                                 src={car.imageUrl}
                                 alt={car.carName}
-                                className="h-[360px] w-full object-contain p-6 sm:h-[460px]"
+                                className="h-[360px] w-full object-cover sm:h-[460px]"
                             />
                         </div>
                     </div>

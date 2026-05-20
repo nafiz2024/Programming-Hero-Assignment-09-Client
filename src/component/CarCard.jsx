@@ -25,12 +25,12 @@ export default function CarCard({ car }) {
         </span>
       </div>
 
-      <div className="mt-1 flex h-40 items-center justify-center overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top,_#ffffff,_#f8fafc_72%,_#eef2f7)] p-3">
+      <div className="mt-1 h-40 overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top,_#ffffff,_#f8fafc_72%,_#eef2f7)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={car.imageUrl}
           alt={car.carName}
-          className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
         />
       </div>
 

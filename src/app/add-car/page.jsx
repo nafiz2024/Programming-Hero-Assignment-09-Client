@@ -1,7 +1,7 @@
 'use client'
 
 import { addCarDetails } from "@/lib/data";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { FiChevronDown } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -23,7 +23,9 @@ const AddCarPage = () => {
         const car = Object.fromEntries(formData.entries())
         car.userId = user?.id || "";
 
-        await addCarDetails(car)
+        const { data: tokenData } = await authClient.token();
+
+        await addCarDetails(car, tokenData?.token)
 
         toast.success('Successfully Added The Car')
 

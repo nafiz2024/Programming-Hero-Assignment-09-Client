@@ -1,19 +1,23 @@
 import { NextResponse } from 'next/server'
-import { auth } from './lib/auth'
-import { headers } from 'next/headers'
  
 export async function proxy(request) {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    })
+    const { pathname } = request.nextUrl;
+    const sessionCookie =
+      request.cookies.get("drivefleet-auth.session_token")?.value ||
+      request.cookies.get("drivefleet-auth.session")?.value;
 
-    if(!session) {
+    if (pathname === "/explore-car") {
+        return NextResponse.next();
+    }
+
+    if (!sessionCookie) {
         return NextResponse.redirect(new URL('/signin', request.url))
     }
-  
+
+    return NextResponse.next()
 }
 
  
 export const config = {
-  matcher: ['/add-car', '/my-bookings', '/explore-car/:path'],
+  matcher: ['/add-car', '/my-bookings', '/my-added-cars', '/explore-car/:path*'],
 }

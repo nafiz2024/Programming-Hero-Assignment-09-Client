@@ -13,6 +13,14 @@ import { useRouter } from "next/navigation";
 const inputClassName =
   "h-12 w-full rounded-xl border border-slate-200 bg-white pl-12 pr-12 text-sm text-slate-800 shadow-[0_10px_25px_-22px_rgba(15,23,42,0.22)] outline-none transition placeholder:text-slate-400 focus:border-orange-300 focus:ring-4 focus:ring-orange-100";
 
+const getErrorMessage = (error, fallback = "Login failed. Please try again.") => {
+  if (!error) return fallback;
+  if (typeof error === "string") return error;
+  if (error.message) return error.message;
+  if (error.error?.message) return error.error.message;
+  return fallback;
+};
+
 const SigninPage = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
@@ -29,11 +37,12 @@ const SigninPage = () => {
 
         if (data) {
           toast.success('Successfully Logged in Your Account')
-          router.push('/')
+          window.location.replace('/')
+          return
         }
     
         if (error) {
-          toast.error(`${error.message}`)
+          toast.error(getErrorMessage(error))
         }
       }
 
@@ -144,7 +153,7 @@ const SigninPage = () => {
               </div>
 
               <button
-                type="submit"
+                type="button"
                 onClick={handleGoogleSignIn}
                 className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-base font-semibold text-slate-700 shadow-[0_10px_25px_-22px_rgba(15,23,42,0.22)] transition hover:border-orange-200 hover:bg-orange-50"
               >

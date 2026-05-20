@@ -13,31 +13,37 @@ const safeFetchJson = async (url, options = {}) => {
     }
 };
 
-export const addCarDetails = async (car) => {
-    await fetch('http://localhost:5000/car', {
+const authHeaders = (token, extraHeaders = {}) => ({
+    ...extraHeaders,
+    ...(token ? { authorization: `Bearer ${token}` } : {}),
+});
+
+export const addCarDetails = async (car, token) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car`, {
             method: 'POST',
-            headers: {
+            headers: authHeaders(token, {
                 'content-type': 'application/json'
-            },
+            }),
             body: JSON.stringify(car)
         })
 
         
 }
 
-export const getCarData = async () => {
-    const data = await safeFetchJson("http://localhost:5000/car", { cache: "no-store" });
+export const getCarData = async (token) => {
+    const data = await safeFetchJson(`${process.env.NEXT_PUBLIC_SERVER_URL}/car`, {
+        cache: "no-store",
+        headers: authHeaders(token),
+    });
 
     return Array.isArray(data) ? data : []
 }
 
 export const getCarDataById = async (id, token) => {
     try {
-        const res = await fetch(`http://localhost:5000/car/${id}`, { 
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-     });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${id}`, {
+            headers: authHeaders(token),
+        });
 
         if (res.ok) {
             const data = await res.json();
@@ -48,44 +54,46 @@ export const getCarDataById = async (id, token) => {
     }
 
     try {
-        const cars = await getCarData();
+        const cars = await getCarData(token);
         return cars.find((car) => String(car._id || car.id) === String(id)) || null;
     } catch {
         return null;
     }
 }
 
-export const editCarDataById = async (_id, carData) => {
-    await fetch(`http://localhost:5000/car/${_id}`, {
+export const editCarDataById = async (_id, carData, token) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${_id}`, {
                 method: "PATCH",
-                headers: {
+                headers: authHeaders(token, {
                     "Content-Type": "application/json",
-                },
+                }),
                 body: JSON.stringify(carData),
             });
 }
 
-export const deleteCarDataById = async (car) => {
-    await fetch(`http://localhost:5000/car/${car._id}`, {
+export const deleteCarDataById = async (car, token) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/car/${car._id}`, {
             method: 'DELETE',
-            headers: {
+            headers: authHeaders(token, {
                 'Content-Type': "application/json"
-            },
+            }),
         });
 }
 
-export const addCarBookingData = async (bookingData) => {
-    await fetch("http://localhost:5000/booking", {
+export const addCarBookingData = async (bookingData, token) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
             method: "POST",
-            headers: {
+            headers: authHeaders(token, {
                 'content-type': "application/json"
-            },
+            }),
             body: JSON.stringify(bookingData)
         })
 }
 
-export const getCarBookingData = async () => {
-    const data = await safeFetchJson("http://localhost:5000/booking",);
+export const getCarBookingData = async (token) => {
+    const data = await safeFetchJson(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
+        headers: authHeaders(token),
+    });
     const list = Array.isArray(data) ? data : data ? [data] : [];
 
     return list.filter((item) => (
@@ -95,11 +103,11 @@ export const getCarBookingData = async () => {
     ));
 }
 
-export const deleteBookingDataById = async (bookingId) => {
-    await fetch(`http://localhost:5000/booking/${bookingId}`, {
+export const deleteBookingDataById = async (bookingId, token) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
         method: "DELETE",
-        headers: {
+        headers: authHeaders(token, {
             "Content-Type": "application/json",
-        },
+        }),
     });
 }
