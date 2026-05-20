@@ -104,7 +104,7 @@ async function run() {
 
       const result = await carCollection.deleteOne({ _id: new ObjectId(id) });
       res.json(result);
-    });
+    }); 
 
     app.post("/booking", verifyToken, async (req, res) => {
       const bookingData = req.body;
