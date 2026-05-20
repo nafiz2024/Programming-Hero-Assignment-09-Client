@@ -5,6 +5,7 @@ import heroCar from "@/assets/DrivenFleet.png";
 import { getCarDataById } from "@/lib/data";
 import { EditCarDataModal } from "@/component/EditCarDataModal";
 import { DeleteCarData } from "@/component/DeleteCarData";
+import { BookingCarCardModal } from "@/component/BookingCarCardModal";
 
 function normalizeCar(car) {
     if (!car) {
@@ -165,12 +166,7 @@ const CarDetailsPage = async ({ params }) => {
                         </div>
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <button
-                                type="button"
-                                className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-6 text-sm font-semibold text-white shadow-[0_18px_35px_-18px_rgba(249,115,22,0.85)] transition hover:from-orange-600 hover:to-amber-600"
-                            >
-                                Book This Car
-                            </button>
+                            <BookingCarCardModal car={car} />
                             <EditCarDataModal car={car} />
                             <DeleteCarData car={car} />
                         </div>
