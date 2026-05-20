@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { authClient, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { deleteBookingDataById, getCarBookingData, getCarData } from "@/lib/data";
 import { toast } from "react-toastify";
 import LoadingSpinner from "@/component/LoadingSpinner";
@@ -36,26 +36,25 @@ const formatPrice = (value) => {
 const MyBookingsPage = () => {
     const { data: session } = useSession();
     const user = session?.user;
-    const userId = user?.id || "";
+    const userId = String(user?.id || user?._id || "");
+    const userEmail = String(user?.email || "").toLowerCase();
     const [bookingList, setBookingList] = useState([]);
     const [cars, setCars] = useState([]);
-    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadData = async () => {
-            const { data: tokenData } = await authClient.token();
-            const nextToken = tokenData?.token || "";
-            setToken(nextToken);
+            try {
+                const [bookingData, carData] = await Promise.all([
+                    getCarBookingData(),
+                    getCarData(),
+                ]);
 
-            const [bookingData, carData] = await Promise.all([
-                getCarBookingData(nextToken),
-                getCarData(nextToken),
-            ]);
-
-            setBookingList(Array.isArray(bookingData) ? bookingData : bookingData ? [bookingData] : []);
-            setCars(Array.isArray(carData) ? carData : []);
-            setLoading(false);
+                setBookingList(Array.isArray(bookingData) ? bookingData : bookingData ? [bookingData] : []);
+                setCars(Array.isArray(carData) ? carData : []);
+            } finally {
+                setLoading(false);
+            }
         };
 
         loadData();
@@ -67,15 +66,21 @@ const MyBookingsPage = () => {
     );
 
     const myBookingList = useMemo(() => {
-        if (!userId) return [];
+        if (!userId && !userEmail) return [];
         return bookingList.filter(
-            (item) => String((item?.bookingData || item)?.userId || "") === String(userId)
+            (item) => {
+                const booking = item?.bookingData || item;
+                const bookingUserId = String(booking?.userId || booking?.ownerId || "");
+                const bookingUserEmail = String(booking?.userEmail || booking?.email || "").toLowerCase();
+
+                return bookingUserId === userId || (!!userEmail && bookingUserEmail === userEmail);
+            }
         );
-    }, [bookingList, userId]);
+    }, [bookingList, userEmail, userId]);
 
     const handleDeleteBooking = async (bookingId) => {
         if (!bookingId) return;
-        await deleteBookingDataById(bookingId, token);
+        await deleteBookingDataById(bookingId);
         setBookingList((prev) => prev.filter((item) => String(item._id || item.id) !== String(bookingId)));
         toast.success("Booking deleted successfully");
     };

@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { deleteCarDataById, getCarData } from "@/lib/data";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,29 +17,35 @@ const MyAddedCars = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user;
-  const userId = user?.id || "";
+  const userId = String(user?.id || user?._id || "");
+  const userEmail = String(user?.email || "").toLowerCase();
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadCars = async () => {
-      const { data: tokenData } = await authClient.token();
-      const data = await getCarData(tokenData?.token);
-      setCars(Array.isArray(data) ? data : []);
-      setLoading(false);
+      try {
+        const data = await getCarData();
+        setCars(Array.isArray(data) ? data : []);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadCars();
   }, []);
 
   const myAddedCars = useMemo(() => {
-    if (!userId) return [];
-    return cars.filter((car) => String(car.userId || "") === String(userId));
-  }, [cars, userId]);
+    if (!userId && !userEmail) return [];
+    return cars.filter((car) => {
+      const carUserId = String(car.userId || car.ownerId || "");
+      const carUserEmail = String(car.userEmail || car.email || "").toLowerCase();
+      return carUserId === userId || (!!userEmail && carUserEmail === userEmail);
+    });
+  }, [cars, userEmail, userId]);
 
   const handleDelete = async (car) => {
-    const { data: tokenData } = await authClient.token();
-    await deleteCarDataById(car, tokenData?.token);
+    await deleteCarDataById(car);
     setCars((prev) => prev.filter((item) => String(item._id || item.id) !== String(car._id || car.id)));
     toast.success("Car deleted successfully");
   };
